@@ -3,7 +3,7 @@ import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
-import MapView, { MapPressEvent, Region } from "react-native-maps";
+import MapView, { MapPressEvent, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { useLocationContext } from "../src/contexts/LocationContext";
 
 export default function MapScreen() {
@@ -96,6 +96,7 @@ export default function MapScreen() {
     return (
         <View style={styles.container}>
             <MapView
+                provider={PROVIDER_GOOGLE}
                 ref={mapRef}
                 style={styles.map}
                 initialRegion={region ?? {
@@ -115,13 +116,13 @@ export default function MapScreen() {
             </View>
 
             <View style={styles.footer}>
-                <Text style={styles.info}>
-                    {region ? `Selected: ${region.latitude.toFixed(6)}, ${region.longitude.toFixed(6)}` : "Move map to select location"}
-                </Text>
+                        <Text style={styles.info}>
+                            Show Flood Forecasts
+                        </Text>
                 <View style={styles.footerButtons}>
-                    <Button title="Center On Me" onPress={centerOnCurrent} />
-                    <View style={{ width: 12 }} />
-                    <Button title="Use This Location" onPress={useLocation} disabled={!marker} />
+                        <Button title="Center On Me" onPress={centerOnCurrent} />
+                        <View style={{ width: 12 }} />
+                        <Button title="Use This Location" onPress={useLocation} disabled={!region} />
                 </View>
             </View>
         </View>

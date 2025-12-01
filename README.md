@@ -1,50 +1,81 @@
-# Welcome to your Expo app 👋
+**Flood Alert — README**
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+- **Project**: Flood Alert — a minimal Expo app that lets users pick a location on a map and shows (mock) flood predictions for that point.
 
-## Get started
+**Quick Start**
+- **Clone**: `git clone <repo-url>`
+- **Install dependencies**: `npm install` (or `yarn` if you prefer)
+- **Create env**: copy `./.env.example` → `./.env` and fill in your Google Maps API keys.
 
-1. Install dependencies
+**Files You Should Know**
+- **Map screen**: `app/map.tsx` — main screen (map is the app entry) with a centered crosshair and "Use This Location" action.
+- **Location screen**: `app/location.tsx` — displays the picked coordinates and dummy flood predictions.
+- **Location state**: `src/contexts/LocationContext.tsx` — shared location store used across screens.
+- **Toast**: `src/components/Toast.tsx` — small animated confirmation banner.
+- **Config loader**: `app.config.js` — reads `.env` and injects `GOOGLE_MAPS_API_KEY_IOS` and `GOOGLE_MAPS_API_KEY_ANDROID` into the Expo config at build time.
+- **Example env**: `.env.example` — variables to fill (`GOOGLE_MAPS_API_KEY_IOS`, `GOOGLE_MAPS_API_KEY_ANDROID`).
 
-   ```bash
-   npm install
-   ```
+**Local Dev (Expo)**
+- Start the developer server:
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+- Open on Android device/emulator: scan QR or press `a` in the terminal.
+- Note: On Android, Google Maps will typically render in Expo Go when the API key is configured in the project config.
+- On iOS, Expo Go uses Apple Maps — to test Google Maps on iOS you must build a custom dev client or a standalone app (see EAS section).
 
-## Learn more
+**Google Maps keys & setup**
+- In Google Cloud Console enable the following APIs:
+   - Maps SDK for Android
+   - Maps SDK for iOS
+- Create API keys and optionally restrict them by package name / bundle id and SHA-1 fingerprint.
+- Add keys to `.env` (do not commit `.env`):
 
-To learn more about developing your project with Expo, look at the following resources:
+```
+GOOGLE_MAPS_API_KEY_IOS=your_ios_key
+GOOGLE_MAPS_API_KEY_ANDROID=your_android_key
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- `app.config.js` will read those values and inject them into the Expo config at build time.
 
-## Join the community
+**Testing Google Maps on iOS (EAS dev client)**
+- Install EAS CLI: `npm i -g eas-cli`
+- Log in: `eas login`
+- Create a minimal `eas.json` (if you don't have one) or use the default.
+- Build a development client:
 
-Join our community of developers creating universal apps.
+```
+npx eas build --profile development --platform ios
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Install the resulting dev client on your device to test Google Maps.
+
+**Native (bare) notes**
+- If you eject to bare React Native you must follow `react-native-maps` platform install steps:
+   - `pod install` in `ios/` and add Google Maps SDK entry in `AppDelegate` (or rely on `app.json` in managed builds).
+   - Add Android `meta-data` entry in `AndroidManifest.xml` for `com.google.android.geo.API_KEY` if you are not using Expo-managed config injection.
+
+**Commands**
+- Start dev server: `npx expo start`
+- Type-check: `npx tsc --noEmit`
+- Lint: `npm run lint` (if configured)
+- Build for iOS (EAS): `npx eas build --platform ios --profile <profile>`
+- Build for Android (EAS): `npx eas build --platform android --profile <profile>`
+
+**Debugging tips**
+- Watch console output from your device using the Expo dev tools or remote JS debug console.
+- Use `console.log` in `app/map.tsx` (where selection is made) and `app/location.tsx` to confirm data flow.
+- If tiles do not show, check Google Cloud console for API errors and ensure keys are not restricted incorrectly.
+
+**Next steps / suggestions**
+- Replace the dummy predictions with a real forecasting API.
+- Persist selected location using `AsyncStorage` if you want it to survive app restarts.
+- Add copy-to-clipboard and share actions on the location screen.
+
+If you want, I can also:
+- Add a ready-to-use `eas.json` (development profile) and a short checklist to build a dev client for iOS,
+- Or add persistence (AsyncStorage) for the picked location.
+
+Enjoy — tell me which next step you'd like me to implement.
