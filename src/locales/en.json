@@ -1,0 +1,24 @@
+{
+  "map": {
+    "hint": "Center the crosshair on the location you want to check.\nTap 'Show Flood Forecasts' to see predictions for that spot.",
+    "center_on_me": "Center On Me",
+    "show_forecasts": "Show Flood Forecasts"
+  },
+  "location": {
+    "title": "Selected location",
+    "predictions_label": "Flood predictions (dummy)",
+    "change": "Change Location",
+    "no_location_selected": "No location selected.",
+    "open_map": "Open Map"
+  },
+  "coords": {
+    "latitude": "Latitude",
+    "longitude": "Longitude"
+  },
+  "pred": {
+    "next_hours": "Next {{hours}}h"
+  },
+  "toast": {
+    "location_applied": "Location selected: {{lat}}, {{lng}}"
+  }
+}

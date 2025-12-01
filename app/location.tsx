@@ -1,17 +1,19 @@
 import { useRouter } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { useLocationContext } from "../src/contexts/LocationContext";
 
 export default function LocationScreen() {
   const { location, setLocation } = useLocationContext();
   const router = useRouter();
+  const { t } = useTranslation();
 
   if (!location) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>No location selected.</Text>
-        <Button title="Open Map" onPress={() => router.push("/map")} />
+        <Text style={styles.message}>{t('location.no_location_selected')}</Text>
+        <Button title={t('location.open_map')} onPress={() => router.push('/map')} />
       </View>
     );
   }
@@ -37,17 +39,17 @@ export default function LocationScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Selected coordinates</Text>
-      <Text style={styles.coords}>Latitude: {location.coords.latitude.toFixed(6)}</Text>
-      <Text style={styles.coords}>Longitude: {location.coords.longitude.toFixed(6)}</Text>
+      <Text style={styles.label}>{t('location.title')}</Text>
+      <Text style={styles.coords}>{t('coords.latitude')}: {location.coords.latitude.toFixed(6)}</Text>
+      <Text style={styles.coords}>{t('coords.longitude')}: {location.coords.longitude.toFixed(6)}</Text>
 
       <View style={{ height: 12 }} />
 
-      <Text style={[styles.label, { marginTop: 8 }]}>Flood predictions (dummy)</Text>
+      <Text style={[styles.label, { marginTop: 8 }]}>{t('location.predictions_label')}</Text>
       <View style={styles.predList}>
         {preds.map((p) => (
           <View key={p.hours} style={styles.predItem}>
-            <Text style={styles.predHour}>Next {p.hours}h</Text>
+            <Text style={styles.predHour}>{t('pred.next_hours', { hours: p.hours })}</Text>
             <Text style={styles.predLevel}>{p.level}</Text>
             <Text style={styles.predPct}>{p.pct}%</Text>
           </View>
@@ -55,7 +57,8 @@ export default function LocationScreen() {
       </View>
 
       <View style={styles.actions}>
-        <Button title="Change" onPress={() => router.push("/map")} />
+        {/* replace navigation so we don't accumulate history when the user wants to change the location */}
+        <Button title={t('location.change')} onPress={() => router.replace('/map')} />
       </View>
     </View>
   );

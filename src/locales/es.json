@@ -1,0 +1,15 @@
+{
+  "map": {
+    "hint": "Centre el punto de mira en la ubicación que desea comprobar.\nPulse 'Mostrar pronósticos de inundaciones' para ver las predicciones para ese lugar.",
+    "center_on_me": "Centrar en mí",
+    "show_forecasts": "Mostrar pronósticos"
+  },
+  "location": {
+    "title": "Ubicación seleccionada",
+    "predictions_label": "Predicciones de inundación (simuladas)",
+    "change": "Cambiar"
+  },
+  "toast": {
+    "location_applied": "Ubicación seleccionada: {{lat}}, {{lng}}"
+  }
+}

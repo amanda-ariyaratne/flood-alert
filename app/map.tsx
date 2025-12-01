@@ -2,11 +2,13 @@ import type { LocationObject } from "expo-location";
 import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button, StyleSheet, Text, View } from "react-native";
 import MapView, { MapPressEvent, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { useLocationContext } from "../src/contexts/LocationContext";
 
 export default function MapScreen() {
+    const { t } = useTranslation();
     const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
     const [region, setRegion] = useState<Region | null>(null);
     const router = useRouter();
@@ -74,8 +76,9 @@ export default function MapScreen() {
             timestamp: Date.now(),
         };
         // persist into context then navigate to the location screen
+        // use replace instead of push so the map doesn't accumulate in the navigation stack
         setLocation(loc);
-        router.push("/location");
+        router.replace("/location");
     };
 
     const centerOnCurrent = async () => {
@@ -116,13 +119,11 @@ export default function MapScreen() {
             </View>
 
             <View style={styles.footer}>
-                        <Text style={styles.info}>
-                            Show Flood Forecasts
-                        </Text>
+                <Text style={styles.info}>{t('map.hint')}</Text>
                 <View style={styles.footerButtons}>
-                        <Button title="Center On Me" onPress={centerOnCurrent} />
-                        <View style={{ width: 12 }} />
-                        <Button title="Use This Location" onPress={useLocation} disabled={!region} />
+                    <Button title={t('map.center_on_me')} onPress={centerOnCurrent} />
+                    <View style={{ width: 12 }} />
+                    <Button title={t('map.show_forecasts')} onPress={useLocation} disabled={!region} />
                 </View>
             </View>
         </View>

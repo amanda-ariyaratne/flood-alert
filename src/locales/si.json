@@ -1,0 +1,25 @@
+{
+  "map": {
+    "hint": "පරීක්ෂා කිරීමට අවශ්‍ය ස්ථානය crosshair එක මැදට ගෙන එන්න.\n'වතුර අනාවැකි පෙන්වන්න' ඔබන්න.",
+    "center_on_me": "මාව මැදට ගන්න",
+    "show_forecasts": "වතුර අනාවැකි පෙන්වන්න"
+  },
+  "location": {
+    "title": "තෝරාගත් ස්ථානය",
+    "predictions_label": "වතුර අනාවැකි (නිරූපිත)",
+    "change": "ස්ථානය වෙනස් කරන්න",
+    "no_location_selected": "ස්ථානයක් තෝරාගෙන නැත.",
+    "open_map": "මාපිටුව විවෘත කරන්න"
+  },
+  "toast": {
+    "location_applied": "තෝරාගත් ස්ථානය: {{lat}}, {{lng}}"
+  }
+
+  ,"coords": {
+    "latitude": "අක්ෂාංශ",
+    "longitude": "රේඛාංශ"
+  },
+  "pred": {
+    "next_hours": "ඊළඟ {{hours}} පැය"
+  }
+}
