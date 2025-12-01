@@ -1,8 +1,9 @@
 import { useRouter } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useLocationContext } from "../src/contexts/LocationContext";
+import THEME from "../src/theme";
 
 export default function LocationScreen() {
   const { location, setLocation } = useLocationContext();
@@ -13,7 +14,9 @@ export default function LocationScreen() {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>{t('location.no_location_selected')}</Text>
-        <Button title={t('location.open_map')} onPress={() => router.push('/map')} />
+        <TouchableOpacity style={styles.primaryButton} onPress={() => router.replace('/map')}>
+          <Text style={styles.primaryLabel}>{t('location.open_map')}</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -58,7 +61,9 @@ export default function LocationScreen() {
 
       <View style={styles.actions}>
         {/* replace navigation so we don't accumulate history when the user wants to change the location */}
-        <Button title={t('location.change')} onPress={() => router.replace('/map')} />
+        <TouchableOpacity style={styles.primaryButton} onPress={() => router.replace('/map')}>
+          <Text style={styles.primaryLabel}>{t('location.change')}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -75,4 +80,12 @@ const styles = StyleSheet.create({
   predHour: { fontSize: 14, color: "#333" },
   predLevel: { fontSize: 14, fontWeight: "600" },
   predPct: { fontSize: 14, color: "#007AFF" },
+  primaryButton: {
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: THEME.brand,
+    marginTop: 8,
+  },
+  primaryLabel: { color: '#fff', fontWeight: '700' },
 });

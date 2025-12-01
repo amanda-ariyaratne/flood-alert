@@ -3,9 +3,10 @@ import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import MapView, { MapPressEvent, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { useLocationContext } from "../src/contexts/LocationContext";
+import THEME from "../src/theme";
 
 export default function MapScreen() {
     const { t } = useTranslation();
@@ -121,9 +122,16 @@ export default function MapScreen() {
             <View style={styles.footer}>
                 <Text style={styles.info}>{t('map.hint')}</Text>
                 <View style={styles.footerButtons}>
-                    <Button title={t('map.center_on_me')} onPress={centerOnCurrent} />
-                    <View style={{ width: 12 }} />
-                    <Button title={t('map.show_forecasts')} onPress={useLocation} disabled={!region} />
+                    <TouchableOpacity onPress={centerOnCurrent} style={styles.secondaryButton}>
+                        <Text style={styles.secondaryLabel}>{t('map.center_on_me')}</Text>
+                    </TouchableOpacity>
+                        <View style={{ width: 12 }} />
+                        <TouchableOpacity
+                            onPress={useLocation}
+                            disabled={!region}
+                            style={[styles.primaryButton, !region && styles.disabled]}>
+                            <Text style={styles.primaryLabel}>{t('map.show_forecasts')}</Text>
+                        </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -141,6 +149,22 @@ const styles = StyleSheet.create({
     },
     info: { marginBottom: 8, textAlign: "center" },
     footerButtons: { flexDirection: "row", justifyContent: "center", alignItems: "center" },
+    primaryButton: {
+        paddingHorizontal: 18,
+        paddingVertical: 10,
+        borderRadius: 8,
+        backgroundColor: THEME.brand,
+    },
+    primaryLabel: { color: '#fff', fontWeight: '700' },
+    disabled: { opacity: 0.5 },
+    secondaryButton: {
+        paddingHorizontal: 14,
+        paddingVertical: 10,
+        borderRadius: 8,
+        backgroundColor: 'transparent',
+        borderWidth: 0,
+    },
+    secondaryLabel: { color: THEME.brand, fontWeight: '600' },
     crosshairContainer: {
         position: "absolute",
         top: "50%",
