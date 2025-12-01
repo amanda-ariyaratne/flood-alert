@@ -1,14 +1,17 @@
+import type { LocationObject } from "expo-location";
 import { getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
 import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 import MapView, { MapPressEvent, Region } from "react-native-maps";
+import { useLocationContext } from "../src/contexts/LocationContext";
 
 export default function MapScreen() {
     const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
     const [region, setRegion] = useState<Region | null>(null);
     const router = useRouter();
     const mapRef = useRef<any>(null);
+    const { setLocation } = useLocationContext();
 
     useEffect(() => {
         (async () => {
@@ -56,8 +59,23 @@ export default function MapScreen() {
     };
 
     const useLocation = () => {
-        if (!marker) return;
-        router.push({ pathname: "/", params: { lat: String(marker.latitude), lng: String(marker.longitude) } });
+        const center = region ?? marker;
+        if (!center) return;
+        const loc: LocationObject = {
+            coords: {
+                latitude: center.latitude,
+                longitude: center.longitude,
+                altitude: null,
+                accuracy: null,
+                altitudeAccuracy: null,
+                heading: null,
+                speed: null,
+            },
+            timestamp: Date.now(),
+        };
+        // persist into context then navigate to the location screen
+        setLocation(loc);
+        router.push("/location");
     };
 
     const centerOnCurrent = async () => {
