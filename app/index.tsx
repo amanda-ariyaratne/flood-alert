@@ -1,11 +1,41 @@
-import { useState } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from "react-native";
-import * as Location from "expo-location";
+import type { LocationObject } from "expo-location";
+import { Accuracy, getCurrentPositionAsync, requestForegroundPermissionsAsync } from "expo-location";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function HomeScreen() {
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
+  const [location, setLocation] = useState<LocationObject | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const router = useRouter();
+  const params = useLocalSearchParams();
+
+  useEffect(() => {
+    const latParam = params.lat as string | undefined;
+    const lngParam = params.lng as string | undefined;
+    if (latParam && lngParam) {
+      const lat = parseFloat(latParam);
+      const lng = parseFloat(lngParam);
+      if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+        const loc: LocationObject = {
+          coords: {
+            latitude: lat,
+            longitude: lng,
+            altitude: null,
+            accuracy: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: Date.now(),
+        };
+        setLocation(loc);
+        // clear params so this doesn't run again
+        router.replace("/");
+      }
+    }
+  }, [params.lat, params.lng]);
 
   const getLocation = async () => {
     setLoading(true);
@@ -13,7 +43,7 @@ export default function HomeScreen() {
     setLocation(null);
 
     // Request permission
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    const { status } = await requestForegroundPermissionsAsync();
     if (status !== "granted") {
       setErrorMsg("Permission to access location was denied.");
       setLoading(false);
@@ -21,8 +51,8 @@ export default function HomeScreen() {
     }
 
     try {
-      const loc = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.Highest,
+      const loc = await getCurrentPositionAsync({
+        accuracy: Accuracy.Highest,
       });
       setLocation(loc);
     } catch (err) {
@@ -33,11 +63,30 @@ export default function HomeScreen() {
     setLoading(false);
   };
 
+  const clearLocation = () => {
+    setLocation(null);
+    setErrorMsg("");
+    setLoading(false);
+  };
+
   return (
     <View style={styles.container}>
       {/* Action Button */}
-      <TouchableOpacity style={styles.button} onPress={getLocation}>
-        <Text style={styles.buttonText}>Get My Location</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={location ? clearLocation : getLocation}
+      >
+        <Text style={styles.buttonText}>
+          {location ? "Clear Location" : "Get My Location"}
+        </Text>
+      </TouchableOpacity>
+
+      {/* Open Map Button */}
+      <TouchableOpacity
+        style={styles.mapButton}
+        onPress={() => router.push("/map")}
+      >
+        <Text style={styles.buttonText}>Pick On Map</Text>
       </TouchableOpacity>
 
       {/* Loading Spinner */}
@@ -82,5 +131,12 @@ const styles = StyleSheet.create({
   error: {
     color: "red",
     marginTop: 10,
+  },
+  mapButton: {
+    marginTop: 12,
+    backgroundColor: "#34C759",
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
   },
 });
